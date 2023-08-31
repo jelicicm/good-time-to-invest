@@ -1,5 +1,6 @@
 # app.py
 from flask import Flask, render_template, request, jsonify
+import json
 
 from good_time_to_invest.etf_math import top_level_calculation
 
@@ -23,6 +24,13 @@ def index():
         return jsonify(result_stats)
     else:
         return render_template("index.html")
+
+@app.route("/banks", methods=["GET"])
+def banks():
+    with open("./data/banks.json", 'r') as bank_file:
+        load_json = json.load(bank_file)
+
+        return load_json
 
 if __name__ == "__main__":
     app.run(debug=True)

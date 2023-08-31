@@ -27,7 +27,6 @@ let portfolio_info: Record<string, Record<string, string>> = {
     }
 };
 
-
 let investor_info: Record<string, Record<string, string>> = {
 
     'monthly_deposit':
@@ -37,12 +36,118 @@ let investor_info: Record<string, Record<string, string>> = {
     }
 };
 
+// Define a global array to store bank data
+interface bankData {
+    bank_name: string,
+    bank_pretty_name: string,
+    variable_rate: number,
+    fixed_rate: number
+}
+
+const banksData: Array<bankData> = [];
+
+
+// Function to populate the dropdown
+function populateDropdown(banks_info): void {
+    const dropdown = document.getElementById('bank-dropdown') as HTMLSelectElement;
+
+    // Clear existing options
+    dropdown.innerHTML = '';
+
+    const empty_element = document.createElement('option');
+    empty_element.text = "Choose Bank";
+    empty_element.value = "empty";
+    dropdown.appendChild(empty_element);
+
+    for (const bankKey of Object.keys(banks_info)) {
+        const bank_name = bankKey;
+        const bank_pretty_name = banks_info[bank_name]["name"];
+        const variable_rate = banks_info[bank_name]["variable"];
+        const fixed_rate = banks_info[bank_name]["fixed"];
+
+        banksData.push(
+            {
+                bank_name,
+                bank_pretty_name,
+                variable_rate,
+                fixed_rate
+            }
+        );
+
+        // Create and append new options
+        const optionElement = document.createElement('option');
+        optionElement.text = bank_pretty_name;
+        optionElement.value = bank_name;
+        dropdown.appendChild(optionElement);
+    }
+}
+
+
+// Fetch the text file and parse its content
+async function fetchAndParseFile(url: string): Promise<any> {
+    const response = await fetch(url);
+    if (response.ok) {
+        const text = await response.text();
+        return JSON.parse(text);
+    } else {
+        throw new Error('Error fetching the file');
+    }
+}
+
+
 // Function to read dropdown menu value
 function readDropdownValue(): string {
     const dropdown = document.getElementById("bank-dropdown") as HTMLSelectElement;
     return dropdown.value;
 }
 
+
+// Function to read text box values and return them as a JSON object
+function readTextBoxValues(): Record<string, string> {
+    const textBoxes = document.querySelectorAll("input[type='text']");
+    const values: Record<string, string> = {};
+
+    textBoxes.forEach((textBox: HTMLInputElement) => {
+        const textBoxName = textBox.name; // Use the name attribute as the key
+        const textBoxValue = textBox.value;
+        values[textBoxName] = textBoxValue;
+    });
+
+    return values;
+}
+
+
+function fill_in_bank_preset(): boolean {
+
+    const bankContainer = document.getElementById("bank-container");
+    const textBoxes = bankContainer.querySelectorAll(".textbox");
+
+
+    let fixed_rate_textbox: HTMLInputElement | null = null;
+    let variable_rate_textbox: HTMLInputElement | null = null;
+
+    // Update the corresponding textbox placeholder
+    textBoxes.forEach((textBox: HTMLInputElement) => {
+        if (textBox.name === "fixed_rate") {
+            fixed_rate_textbox = textBox;
+        } else if (textBox.name === "variable_rate") {
+            variable_rate_textbox = textBox;
+        }
+    });
+
+    const dropdown = document.getElementById('bank-dropdown') as HTMLSelectElement;
+
+    fixed_rate_textbox.value = fixed_rate_textbox.placeholder;
+    variable_rate_textbox.value = variable_rate_textbox.placeholder;
+    for (const bank of banksData) {
+        if (bank.bank_name == dropdown.value) {
+            fixed_rate_textbox.value = String(bank.fixed_rate)
+            variable_rate_textbox.value = String(bank.variable_rate)
+        }
+    }
+
+    return true;
+}
 
 
 // Function to be executed when the page loads
@@ -80,10 +185,18 @@ window.onload = () => {
         investor_container.appendChild(textBox);
     }
 
-    // Fill in Bank Presets
+    // Fill in Bank presets
+    let url: string = "/banks";
+    fetchAndParseFile(url)
+        .then(data => {
+            populateDropdown(data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
 
     const dropdownMenu = document.getElementById("bank-dropdown") as HTMLSelectElement;
-    dropdownMenu.addEventListener("change", () => {
+    dropdownMenu.addEventListener("change", (event) => {
         fill_in_bank_preset();
     });
 
@@ -97,66 +210,9 @@ window.onload = () => {
 };
 
 
-function fill_in_bank_preset(): boolean {
-
-    const dropdownMenu = document.getElementById("bank-dropdown") as HTMLSelectElement;
-    const bankContainer = document.getElementById("bank-container");
-    const textBoxes = bankContainer.querySelectorAll(".textbox");
-
-    let fixed_rate_textbox: HTMLInputElement | null = null;
-    let variable_rate_textbox: HTMLInputElement | null = null;
-    
-    // Update the corresponding textbox placeholder
-    textBoxes.forEach((textBox: HTMLInputElement) => {
-        if (textBox.name === "fixed_rate") {
-            fixed_rate_textbox = textBox;
-        } else if(textBox.name === "variable_rate") {
-            variable_rate_textbox = textBox;
-        }
-    });
-
-    console.log("123");
-    if (dropdownMenu.value === "alta") {
-        console.log("1");
-        fixed_rate_textbox.value = String(0.3);
-        variable_rate_textbox.value = String(0.9);
-    } else if (dropdownMenu.value === "intesa") {
-        console.log("2");
-        fixed_rate_textbox.value = String(1.5);
-        variable_rate_textbox.value = String(1.5);
-    } else if (dropdownMenu.value === "erste") {
-        console.log("3");
-        fixed_rate_textbox.value = String(25);
-        variable_rate_textbox.value = String(0);
-    } else {
-        fixed_rate_textbox.value = fixed_rate_textbox.placeholder;
-        variable_rate_textbox.value = variable_rate_textbox.placeholder;
-    }
-
-    return true;
-}
-
-
-// Function to read text box values and return them as a JSON object
-function readTextBoxValues(): Record<string, string> {
-    const textBoxes = document.querySelectorAll("input[type='text']");
-    const values: Record<string, string> = {};
-
-    textBoxes.forEach((textBox: HTMLInputElement) => {
-        const textBoxName = textBox.name; // Use the name attribute as the key
-        const textBoxValue = textBox.value;
-        values[textBoxName] = textBoxValue;
-    });
-
-
-    console.log(values);
-
-    return values;
-}
-
 async function sendJSONToFlask(data: Record<string, string>): Promise<Record<string, string>> {
     const url = "/";
-    
+
     const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -175,35 +231,9 @@ async function sendJSONToFlask(data: Record<string, string>): Promise<Record<str
 
 }
 
+
 async function calculate_returns(): Promise<Record<string, string>> {
     const text_box_values = readTextBoxValues();
     const calculation_results = await sendJSONToFlask(text_box_values);
     return text_box_values;
-}
-
-// Function to populate the dropdown
-function populateDropdown(dropdownOptions): void {
-    const dropdown = document.getElementById('dynamic-dropdown') as HTMLSelectElement;
-
-    // Clear existing options
-    dropdown.innerHTML = '';
-
-    // Create and append new options
-    dropdownOptions.forEach(option => {
-        const optionElement = document.createElement('option');
-        optionElement.text = option.label;
-        optionElement.value = option.value;
-        dropdown.appendChild(optionElement);
-    });
-}
-
-// Fetch the text file and parse its content
-async function fetchAndParseFile(url: string): Promise<any> {
-    const response = await fetch(url);
-    if (response.ok) {
-        const text = await response.text();
-        return JSON.parse(text);
-    } else {
-        throw new Error('Error fetching the file');
-    }
 }
