@@ -1,0 +1,41 @@
+{
+  "addico": {
+    "name": "Addico",
+    "variable": 0.8,
+    "fixed": 10
+  },
+  "aik": {
+    "name": "AIK",
+    "variable": 0.35,
+    "fixed": 10
+  },
+  "alta": {
+    "name": "ALTA",
+    "variable": 0.3,
+    "fixed": 9.37
+  },
+  "erste": {
+    "name": "Erste",
+    "variable": 0.8,
+    "variable_min": 10.21,
+    "variable_max": 340.4,
+    "fixed": 0
+  },
+  "mobi": {
+    "name": "Mobi",
+    "variable": 0.7,
+    "variable_min": 22.97,
+    "fixed": 0
+  },
+  "nlbkb": {
+    "name": "NLB KB",
+    "variable": 0.7,
+    "variable_min": 8.51,
+    "fixed": 8.51
+  },
+  "raiffeisen": {
+    "name": "Raiffeisen",
+    "variable": 0.6,
+    "fixed": 12.5
+  }
+}

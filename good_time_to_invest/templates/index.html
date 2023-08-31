@@ -1,0 +1,82 @@
+<!-- templates/index.html -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask TypeScript App</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <p>Bank details</p>
+    <div id="bank-container"></div>
+    <p>Investor details</p>
+    <div id="investor-container"></div>
+    <p>Portfolio details</p>
+    <div id="portfolio-container"></div>
+    <p>Let's do the math!</p>
+    <button id="calculate-button"></button>
+    <script src="{{ url_for('static', filename='dist/app.js') }}"></script>
+</body>
+</html> -->
+
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask TypeScript App</title>
+    <style>
+        /* ... (Other styles) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+            gap: 10px;
+        }
+        .left-column {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .right-column {
+            background-color: #fff; /* Adjust background color */
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="left-column">
+
+        <p>Select from Bank presets</p>
+        <!-- <select id="bank-dropdown"></select> -->
+        <select id="bank-dropdown">
+            <option value="empty">Choose Bank</option>
+            <option value="alta">Alta Banka</option>
+            <option value="intesa">Banka Intesa</option>
+            <option value="erste">Erste Banka</option>
+        </select>
+
+        <p>Bank details</p>
+        <div id="bank-container"></div>
+        <p>Investor details</p>
+        <div id="investor-container"></div>
+        <p>Portfolio details</p>
+        <div id="portfolio-container"></div>
+        <p>Let's do the math!</p>
+        <button id="calculate-button"></button>
+        <script src="{{ url_for('static', filename='dist/app.js') }}"></script>
+        </div>
+        <div class="right-column">
+            <!-- Empty right column -->
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='dist/app.js') }}"></script>
+</body>
+</html>
