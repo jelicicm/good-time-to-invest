@@ -1,32 +1,4 @@
 <!-- templates/index.html -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Flask TypeScript App</title>
-    <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, auto);
-            gap: 10px;
-        }
-    </style>
-</head>
-<body>
-    <p>Bank details</p>
-    <div id="bank-container"></div>
-    <p>Investor details</p>
-    <div id="investor-container"></div>
-    <p>Portfolio details</p>
-    <div id="portfolio-container"></div>
-    <p>Let's do the math!</p>
-    <button id="calculate-button"></button>
-    <script src="{{ url_for('static', filename='dist/app.js') }}"></script>
-</body>
-</html> -->
-
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,35 +20,37 @@
             background-color: #fff; /* Adjust background color */
             border: 1px solid #ccc;
         }
+        /* Add this CSS to your external stylesheet */
+        .chart-container {
+            height: 400px; /* Set the fixed height for the container */
+            overflow-x: auto; /* Enable horizontal scrolling if needed */
+        }
     </style>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
+    <!-- Specify type="module" to treat app.js as an ES6 module -->
+    <script type="module" src="{{ url_for('static', filename='dist/app.js') }}"></script>
+
+
     <div class="grid-container">
         <div class="left-column">
-
-        <p>Select from Bank presets</p>
-        <select id="bank-dropdown"></select>
-        <!-- <select id="bank-dropdown">
-            <option value="empty">Choose Bank</option>
-            <option value="alta">Alta Banka</option>
-            <option value="intesa">Banka Intesa</option>
-            <option value="erste">Erste Banka</option>
-        </select> -->
-
-        <p>Bank details</p>
-        <div id="bank-container"></div>
-        <p>Investor details</p>
-        <div id="investor-container"></div>
-        <p>Portfolio details</p>
-        <div id="portfolio-container"></div>
-        <p>Let's do the math!</p>
-        <button id="calculate-button"></button>
-        <script src="{{ url_for('static', filename='dist/app.js') }}"></script>
+            <p>Select from Bank presets</p>
+            <select id="bank-dropdown"></select>
+            <p>Bank details</p>
+            <div id="bank-container"></div>
+            <p>Investor details</p>
+            <div id="investor-container"></div>
+            <p>Portfolio details</p>
+            <div id="portfolio-container"></div>
+            <p>Let's do the math!</p>
+            <button id="calculate-button"></button>
         </div>
         <div class="right-column">
-            <!-- Empty right column -->
+            <div id="chart-container" class="chart-container">
+                <svg id="bar-chart"></svg>
+              </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='dist/app.js') }}"></script>
 </body>
 </html>

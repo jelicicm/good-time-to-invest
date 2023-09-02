@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify
 import json
 
 from good_time_to_invest.etf_math import top_level_calculation
+from good_time_to_invest.math_utils import statistics_to_json
 
 app = Flask(__name__)
 
@@ -19,9 +20,7 @@ def index():
                                     float(data['yearly_growth']),
                                     int(data['months_to_simulate']))
         
-        print(result_stats)
-
-        return jsonify(result_stats)
+        return jsonify([statistics_to_json(stats) for stats in result_stats])
     else:
         return render_template("index.html")
 
