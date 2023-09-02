@@ -204,6 +204,9 @@ window.onload = () => {
     const button = document.createElement("button");
     button.textContent = "Calculate";
     button.addEventListener("click", async () => {
+        const textField = document.getElementById("text-field-1") as HTMLTextAreaElement;
+        textField.value = "";
+
         // Select the SVG element
         const svg = d3.select("#bar-chart");
 
@@ -212,6 +215,7 @@ window.onload = () => {
 
         let returns = await calculate_returns();
         draw_result_graph(returns);
+        write_result_findings(returns);
     });
     const calculateButtonContainer = document.getElementById("calculate-button");
     calculateButtonContainer.appendChild(button); // Append to calculateButtonContainer
@@ -245,6 +249,26 @@ async function calculate_returns(): Promise<Record<string, string>> {
     const calculation_results = await sendJSONToFlask(text_box_values);
     return calculation_results;
 }
+
+function write_result_findings(calculated_returns: any) {
+    // Get a reference to the text area element
+    const textField = document.getElementById("text-field-1") as HTMLTextAreaElement;
+
+    // Check if the text area element exists
+    if (textField) {
+        const objs = calculated_returns;
+        // Warning: this destroys the original ordering, making this array useless after this printout!
+        objs.sort((a,b) => (a.total_money_out < b.total_money_out) ? 1 : ((b.total_money_out < a.total_money_out) ? -1 : 0))
+        
+        const result_text = `With these parameters, you'd earn the most money if investing every ${objs[0].deposit_on_x_th_month} month(s).`;
+
+        // Set the text content of the text area
+        textField.value = result_text;
+    } else {
+        console.error("Text area element not found.");
+    }
+}
+
 
 function draw_result_graph(calculated_returns: any) {
 
@@ -281,9 +305,15 @@ function draw_result_graph(calculated_returns: any) {
         .range([0, height])
         .padding(0.1); // Adjust the padding value as needed, e.g., padding(0.05
 
+
+    const has_negative_values: boolean =( d3.min(data, d => d.value) < 0 )? true : false;
+    
+    let x_domain = has_negative_values ? [d3.min(data, d => d.value), d3.max(data, d => d.value)] :
+    [0, d3.max(data, d => d.value)]; 
+    
     const xScale = d3
         .scaleLinear()
-        .domain([0, d3.max(data, d => d.value)]) // Set the x-axis domain to start from 0
+        .domain(x_domain) // Set the x-axis domain to start from 0
         .range([0, width]); // Set the x-axis range
 
 

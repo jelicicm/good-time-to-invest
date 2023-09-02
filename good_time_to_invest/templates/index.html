@@ -1,6 +1,7 @@
 <!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Flask TypeScript App</title>
@@ -8,49 +9,114 @@
         /* ... (Other styles) */
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+            grid-template-columns: 1fr 1fr;
+            /* Two equal-width columns */
             gap: 10px;
         }
+
         .left-column {
             background-color: #f4f4f4;
             padding: 10px;
             border: 1px solid #ccc;
         }
+
         .right-column {
-            background-color: #fff; /* Adjust background color */
+            background-color: #fff;
+            /* Adjust background color */
             border: 1px solid #ccc;
         }
+
         /* Add this CSS to your external stylesheet */
         .chart-container {
-            height: 400px; /* Set the fixed height for the container */
-            overflow-x: auto; /* Enable horizontal scrolling if needed */
+            height: 400px;
+            /* Set the fixed height for the container */
+            overflow-x: auto;
+            /* Enable horizontal scrolling if needed */
+        }
+
+        .lower-half {
+            height: 50vh;
+            /* Set the height to 50% of the viewport height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .text-field {
+            flex-grow: 1;
+            /* Make .text-field take up all available vertical space */
+            padding: 10px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            /* Add vertical scrollbar if content overflows */
+        }
+
+        .notes {
+            background-color: #f4f4f4;
+            /* Optionally style the .notes div */
+            padding: 10px;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+            /* Prevent .notes from shrinking */
         }
     </style>
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
+
 <body>
     <!-- Specify type="module" to treat app.js as an ES6 module -->
     <script type="module" src="{{ url_for('static', filename='dist/app.js') }}"></script>
 
 
-    <div class="grid-container">
-        <div class="left-column">
-            <p>Select from Bank presets</p>
-            <select id="bank-dropdown"></select>
-            <p>Bank details</p>
-            <div id="bank-container"></div>
-            <p>Investor details</p>
-            <div id="investor-container"></div>
-            <p>Portfolio details</p>
-            <div id="portfolio-container"></div>
-            <p>Let's do the math!</p>
-            <button id="calculate-button"></button>
+    <div class="upper-half">
+        <div class="grid-container">
+            <div class="left-column">
+                <p>Select from Bank presets</p>
+                <select id="bank-dropdown"></select>
+                <p>Bank details</p>
+                <div id="bank-container"></div>
+                <p>Investor details</p>
+                <div id="investor-container"></div>
+                <p>Portfolio details</p>
+                <div id="portfolio-container"></div>
+                <p>Let's do the math!</p>
+                <button id="calculate-button"></button>
+            </div>
+            <div class="right-column">
+                <div id="chart-container" class="chart-container">
+                    <svg id="bar-chart"></svg>
+                </div>
+            </div>
         </div>
-        <div class="right-column">
-            <div id="chart-container" class="chart-container">
-                <svg id="bar-chart"></svg>
-              </div>
+    </div>
+
+    <div class="lower-half">
+        <div class="text-field">
+            <textarea id="text-field-1" readonly placeholder=""></textarea>
+        </div>
+
+        <div class="notes">
+            <div id="disclaimer-and-contact">
+                <p><strong>Disclaimer:</strong> This software is provided for informational purposes only and should not
+                    be
+                    considered as financial advice. The creator of this software is not a financial advisor, and the
+                    information provided should not be construed as professional financial guidance.</p>
+                <p>Investing and financial decisions carry inherent risks, and it's essential to conduct thorough
+                    research
+                    and consult with a qualified financial professional before making any investment choices. The
+                    creator of
+                    this software disclaims any responsibility for financial gains or losses that may result from its
+                    use.
+                </p>
+            </div>
+            <div id="contact-info">
+                <p>
+                <p>If you have any questions or would like to contact the author, please visit the <a
+                        href="https://github.com/jelicicm/good-time-to-invest" target="_blank"> GitHub page</a> of this
+                    project.
+                </p>
+            </div>
         </div>
     </div>
 </body>
+
 </html>
