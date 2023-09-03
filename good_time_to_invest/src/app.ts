@@ -33,7 +33,7 @@ let investor_info: Record<string, Record<string, string>> = {
     'monthly_deposit':
     {
         'name': 'monthly_deposit',
-        'text_box_placeholder': 'Deposit per month (EUR)'
+        'text_box_placeholder': 'Save per month (EUR)'
     }
 };
 
@@ -269,7 +269,7 @@ function write_result_findings(calculated_returns: any) {
         // Warning: this destroys the original ordering, making this array useless after this printout!
         objs.sort((a, b) => (a.total_money_out < b.total_money_out) ? 1 : ((b.total_money_out < a.total_money_out) ? -1 : 0))
 
-        const result_text = `With these parameters, you'd earn the most money if investing ${deposit_per_month * Number(objs[0].deposit_on_x_th_month)} every ${objs[0].deposit_on_x_th_month} month(s).`;
+        const result_text = `With these bank parameters, and saving ${Number(deposit_per_month)} EUR monthly, you'd earn the most money (${Number(objs[0].total_money_out)} EUR) if investing ${deposit_per_month * Number(objs[0].deposit_on_x_th_month)} EUR every ${objs[0].deposit_on_x_th_month} month(s).`;
 
         // Set the text content of the text area
         textField.value = result_text;
@@ -340,6 +340,13 @@ function draw_result_graph(calculated_returns: any) {
         .enter()
         .append("rect")
         .attr("class", "bar")
+        .attr("fill", function(d) {
+            if (d.value > 0) {
+              return "#12EAEA";
+            } 
+            return "red";
+          })
+        
         .attr("y", (d) => yScale(d.name.toString()))
         .attr("height", 20) // Set a fixed height for all bars (adjust as needed)
         .attr("x", 0) // X position starts from 0
@@ -352,7 +359,7 @@ function draw_result_graph(calculated_returns: any) {
         .enter()
         .append("text")
         .attr("class", "bar-label")
-        .attr("x", (d) => xScale(d.value) + 5) // Adjust the position
+        .attr("x", (d) => 5) // Adjust the position
         .attr("y", (d) => yScale(d.name.toString()) + 10) // Adjust the vertical position
         .attr("text-anchor", "start") // Adjust the text anchor
         .style("font-size", "12px") // Set a fixed font size (adjust as needed)
