@@ -150,9 +150,13 @@ function fill_in_bank_preset(): boolean {
     return true;
 }
 
+let deposit_per_month: number = 0;
 
 // Function to be executed when the page loads
 window.onload = () => {
+    const textField = document.getElementById("text-field-1") as HTMLTextAreaElement;
+    textField.value = "";
+
     const bank_container = document.getElementById("bank-container");
 
     for (const key in bank_info) {
@@ -213,6 +217,7 @@ window.onload = () => {
         // Remove all elements within the SVG
         svg.selectAll("*").remove();
 
+
         let returns = await calculate_returns();
         draw_result_graph(returns);
         write_result_findings(returns);
@@ -246,6 +251,10 @@ async function sendJSONToFlask(data: Record<string, string>): Promise<Record<str
 
 async function calculate_returns(): Promise<Record<string, string>> {
     const text_box_values = readTextBoxValues();
+
+    deposit_per_month = Number(text_box_values['monthly_deposit']);
+    console.log(`deposit_per_month = ${deposit_per_month}`);
+
     const calculation_results = await sendJSONToFlask(text_box_values);
     return calculation_results;
 }
@@ -258,9 +267,9 @@ function write_result_findings(calculated_returns: any) {
     if (textField) {
         const objs = calculated_returns;
         // Warning: this destroys the original ordering, making this array useless after this printout!
-        objs.sort((a,b) => (a.total_money_out < b.total_money_out) ? 1 : ((b.total_money_out < a.total_money_out) ? -1 : 0))
-        
-        const result_text = `With these parameters, you'd earn the most money if investing every ${objs[0].deposit_on_x_th_month} month(s).`;
+        objs.sort((a, b) => (a.total_money_out < b.total_money_out) ? 1 : ((b.total_money_out < a.total_money_out) ? -1 : 0))
+
+        const result_text = `With these parameters, you'd earn the most money if investing ${deposit_per_month * Number(objs[0].deposit_on_x_th_month)} every ${objs[0].deposit_on_x_th_month} month(s).`;
 
         // Set the text content of the text area
         textField.value = result_text;
@@ -306,11 +315,11 @@ function draw_result_graph(calculated_returns: any) {
         .padding(0.1); // Adjust the padding value as needed, e.g., padding(0.05
 
 
-    const has_negative_values: boolean =( d3.min(data, d => d.value) < 0 )? true : false;
-    
+    const has_negative_values: boolean = (d3.min(data, d => d.value) < 0) ? true : false;
+
     let x_domain = has_negative_values ? [d3.min(data, d => d.value), d3.max(data, d => d.value)] :
-    [0, d3.max(data, d => d.value)]; 
-    
+        [0, d3.max(data, d => d.value)];
+
     const xScale = d3
         .scaleLinear()
         .domain(x_domain) // Set the x-axis domain to start from 0
