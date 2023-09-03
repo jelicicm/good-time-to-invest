@@ -10,7 +10,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "good_time_to_invest = good_time_to_invest.flask_app:main",
+            "good_time_to_invest = good_time_to_invest.flask_app:run_server",
         ],
     },
 )

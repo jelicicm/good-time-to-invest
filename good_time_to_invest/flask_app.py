@@ -31,5 +31,10 @@ def banks():
 
         return load_json
 
-if __name__ == "__main__":
+
+def run_server():
     app.run(debug=True)
+
+
+if __name__ == "__main__":
+    run_server()
