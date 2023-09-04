@@ -13,7 +13,7 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install nodejs -y
 
-RUN npm install typescript
+RUN npm install typescript @types/d3
 RUN cd good_time_to_invest && npm run build && cd -
 
 # Install any needed packages specified in requirements.txt
@@ -30,7 +30,10 @@ ENV NAME World
 # Define environment variable to suppress interactive prompts during npm install
 ENV DEBIAN_FRONTEND noninteractive
 
+ENV FLASK_ENV development
+
 WORKDIR good_time_to_invest
 # Run app.py when the container launches
-CMD ["python", "flask_app.py"]
+# CMD ["python", "flask_app.py"]
 
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "flask_app:app"]
